@@ -17,7 +17,7 @@ class BooksShelf extends Component {
             <div className="bookshelf">
                 <h2 className="bookshelf-title">{title}</h2>
                 <div className="bookshelf-books">
-                    {(!books || books.length == 0) ?
+                    {(!books || books.length === 0) ?
                         <span>Shelf is empty</span> :
                         <ol className="books-grid">
                             {booksComponents}

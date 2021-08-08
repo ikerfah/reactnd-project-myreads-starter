@@ -12,12 +12,13 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false
+    showSearchPage: false,
+    isLoading: true // To avoid showing shelf is empty when page first loaded
   }
 
   componentDidMount() {
     BooksAPI.getAll()
-      .then((books) => this.setState({ books }))
+      .then((books) => this.setState({ books,isLoading:false }))
   }
 
   onShelfChanged = (book, newShelfValue) => {
@@ -35,6 +36,10 @@ class BooksApp extends React.Component {
   }
 
   render() {
+
+    if(this.state.isLoading){
+      return <p>Loading...</p>
+    }
 
     const currentlyReading = this.state.books.filter((book) => book.shelf === 'currentlyReading')
     const wantToRead = this.state.books.filter((book) => book.shelf === 'wantToRead')
