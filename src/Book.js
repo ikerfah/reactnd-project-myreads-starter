@@ -7,6 +7,12 @@ class Book extends Component {
         super(props);
         this.state = {}
     }
+
+    handleOnShelfChanged = (newShelfValue) =>{
+        if(this.props.onShelfChanged){
+            this.props.onShelfChanged(this.props.book,newShelfValue)
+        }
+    }
     render() {
         const {book} = this.props
         return (
@@ -14,7 +20,7 @@ class Book extends Component {
                 <div className="book">
                     <div className="book-top">
                         <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
-                        <BookShelfChanger />
+                        <BookShelfChanger onShelfChanged={this.handleOnShelfChanged}/>
                     </div>
                     <div className="book-title">{book.title}</div>
                     <BookAuthors authors={book.authors}/>
@@ -25,7 +31,8 @@ class Book extends Component {
 }
 
 Book.propTypes = {
-    book: PropTypes.object.isRequired
+    book: PropTypes.object.isRequired,
+    onShelfChanged: PropTypes.func.isRequired
 };
 
 export default Book;
