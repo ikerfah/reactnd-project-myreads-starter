@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Book from './Book';
 import * as BooksAPI from './BooksAPI';
 class SearchBook extends Component {
@@ -14,7 +15,6 @@ class SearchBook extends Component {
         }))
 
         if (value !== '') {
-
             BooksAPI.search(value)
                 .then((books) => {
                     this.setState((_) => ({
@@ -24,10 +24,21 @@ class SearchBook extends Component {
         }
 
     }
+    onShelfChanged = (book, newShelfValue) => {
+        if (this.props.onShelfChanged) {
+            this.props.onShelfChanged(book, newShelfValue)
+        }
+    }
+
     render() {
         const { searchedBooks } = this.state
 
-        const booksComponents = searchedBooks.map((book) => (
+        const { books } = this.props
+
+        const mergedBooks = searchedBooks.map((searchedBook) => ({
+            ...searchedBook,...books.find((book)=>book.id === searchedBook.id)
+        }))
+        const booksComponents = mergedBooks.map((book) => (
             <Book book={book} onShelfChanged={this.onShelfChanged} />
         ))
         return (
@@ -51,6 +62,10 @@ class SearchBook extends Component {
             </div>
         );
     }
+}
+
+SearchBook.propTypes = {
+    books: PropTypes.array.isRequired
 }
 
 export default SearchBook;

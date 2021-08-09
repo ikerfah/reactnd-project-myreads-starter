@@ -42,13 +42,16 @@ class BooksApp extends React.Component {
       return <p>Loading...</p>
     }
 
-    const currentlyReading = this.state.books.filter((book) => book.shelf === 'currentlyReading')
-    const wantToRead = this.state.books.filter((book) => book.shelf === 'wantToRead')
-    const read = this.state.books.filter((book) => book.shelf === 'read')
+    const { books } = this.state
+    const currentlyReading = books.filter((book) => book.shelf === 'currentlyReading')
+    const wantToRead = books.filter((book) => book.shelf === 'wantToRead')
+    const read = books.filter((book) => book.shelf === 'read')
+
     return (
       <div className="app">
         <Route path="/search" render={({ history }) => (
           <SearchBook
+            books={books}
             history={history}
             onShelfChanged={this.onShelfChanged}
           />
