@@ -8,22 +8,22 @@ class Book extends Component {
         this.state = {}
     }
 
-    handleOnShelfChanged = (newShelfValue) =>{
-        if(this.props.onShelfChanged){
-            this.props.onShelfChanged(this.props.book,newShelfValue)
+    handleOnShelfChanged = (newShelfValue) => {
+        if (this.props.onShelfChanged) {
+            this.props.onShelfChanged(this.props.book, newShelfValue)
         }
     }
     render() {
-        const {book} = this.props
+        const { book } = this.props
         return (
             <li key={book.id}>
                 <div className="book">
                     <div className="book-top">
-                        <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: (book.imageLinks && book.imageLinks.thumbnail)? `url("${book.imageLinks.thumbnail}")`:'none' }}></div>
-                        <BookShelfChanger onShelfChanged={this.handleOnShelfChanged} defaultShelf={book.shelf}/>
+                        <div className="book-cover" style={{ width: 128, height: 188, backgroundImage: (book.imageLinks && book.imageLinks.thumbnail) ? `url("${book.imageLinks.thumbnail}")` : 'none' }}></div>
+                        <BookShelfChanger onShelfChanged={this.handleOnShelfChanged} defaultShelf={book.shelf} />
                     </div>
                     <div className="book-title">{book.title}</div>
-                    {book.authors && <BookAuthors authors={book.authors}/>}
+                    {book.authors && <BookAuthors authors={book.authors} />}
                 </div>
             </li>
         )

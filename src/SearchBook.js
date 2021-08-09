@@ -39,7 +39,7 @@ class SearchBook extends Component {
             ...searchedBook,...books.find((book)=>book.id === searchedBook.id)
         }))
         const booksComponents = mergedBooks.map((book) => (
-            <Book book={book} onShelfChanged={this.onShelfChanged} />
+            <Book key={book.id} book={book} onShelfChanged={this.onShelfChanged} />
         ))
         return (
             <div className="search-books">
@@ -65,7 +65,9 @@ class SearchBook extends Component {
 }
 
 SearchBook.propTypes = {
-    books: PropTypes.array.isRequired
+    books: PropTypes.array.isRequired,
+    onShelfChanged: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired
 }
 
 export default SearchBook;

@@ -11,7 +11,7 @@ class BooksShelf extends Component {
         const { title, books } = this.props
 
         const booksComponents = books.map((book) => (
-            <Book book={book} onShelfChanged={this.onShelfChanged} />
+            <Book key={book.id} book={book} onShelfChanged={this.onShelfChanged} />
         ))
         return (
             <div className="bookshelf">
