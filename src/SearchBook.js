@@ -5,21 +5,31 @@ import * as BooksAPI from './BooksAPI';
 class SearchBook extends Component {
     state = {
         query: '',
-        searchedBooks: []
+        searchedBooks: [],
+        error: ''
 
     }
 
     handleOnChangeQuery = (value) => {
         this.setState((_) => ({
-            query: value
+            query: value,
+            searchedBooks: []
         }))
-
         if (value !== '') {
             BooksAPI.search(value)
                 .then((books) => {
-                    this.setState((_) => ({
-                        searchedBooks: [...books]
-                    }))
+                    if (books.error) {
+                        this.setState({
+                            error: books.error,
+                            searchedBooks: [...books.items]
+                        })
+                    } else {
+                        this.setState((_) => ({
+                            error: '',
+                            searchedBooks: [...books]
+                        }))
+                    }
+
                 })
         }
 
@@ -36,7 +46,7 @@ class SearchBook extends Component {
         const { books } = this.props
 
         const mergedBooks = searchedBooks.map((searchedBook) => ({
-            ...searchedBook,...books.find((book)=>book.id === searchedBook.id)
+            ...searchedBook, ...books.find((book) => book.id === searchedBook.id)
         }))
         const booksComponents = mergedBooks.map((book) => (
             <Book key={book.id} book={book} onShelfChanged={this.onShelfChanged} />
@@ -55,6 +65,7 @@ class SearchBook extends Component {
                     </div>
                 </div>
                 <div className="search-books-results">
+                    {this.state.error && <span style={{ color: 'red' }}>{this.state.error}</span>}
                     <ol className="books-grid">
                         {booksComponents}
                     </ol>
