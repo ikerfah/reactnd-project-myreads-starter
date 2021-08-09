@@ -4,6 +4,7 @@ import './App.css'
 import BooksShelf from './BooksShelf'
 import * as BooksAPI from './BooksAPI'
 import { Route } from 'react-router-dom'
+import SearchBook from './SearchBook'
 class BooksApp extends React.Component {
   state = {
     books: [],
@@ -18,7 +19,7 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll()
-      .then((books) => this.setState({ books,isLoading:false }))
+      .then((books) => this.setState({ books, isLoading: false }))
   }
 
   onShelfChanged = (book, newShelfValue) => {
@@ -37,7 +38,7 @@ class BooksApp extends React.Component {
 
   render() {
 
-    if(this.state.isLoading){
+    if (this.state.isLoading) {
       return <p>Loading...</p>
     }
 
@@ -46,37 +47,29 @@ class BooksApp extends React.Component {
     const read = this.state.books.filter((book) => book.shelf === 'read')
     return (
       <div className="app">
-        <Route path="/search" render={({history})=>(
-          <div className="search-books">
-          <div className="search-books-bar">
-            <button className="close-search" onClick={() => history.push("/")}>Close</button>
-            <div className="search-books-input-wrapper">
-              <input type="text" placeholder="Search by title or author" />
+        <Route path="/search" render={({ history }) => (
+          <SearchBook
+            history={history}
+            onShelfChanged={this.onShelfChanged}
+          />
 
-            </div>
-          </div>
-          <div className="search-books-results">
-            <ol className="books-grid"></ol>
-          </div>
-        </div>
-      
         )} />
-        <Route exact path="/" render={({history})=>(
+        <Route exact path="/" render={({ history }) => (
           <div className="list-books">
-          <div className="list-books-title">
-            <h1>MyReads</h1>
-          </div>
-          <div className="list-books-content">
-            <div>
-              <BooksShelf title={"Currently Reading"} books={currentlyReading} onShelfChanged={this.onShelfChanged} />
-              <BooksShelf title={"Want to Read"} books={wantToRead} onShelfChanged={this.onShelfChanged} />
-              <BooksShelf title={"Read"} books={read} onShelfChanged={this.onShelfChanged} />
+            <div className="list-books-title">
+              <h1>MyReads</h1>
+            </div>
+            <div className="list-books-content">
+              <div>
+                <BooksShelf title={"Currently Reading"} books={currentlyReading} onShelfChanged={this.onShelfChanged} />
+                <BooksShelf title={"Want to Read"} books={wantToRead} onShelfChanged={this.onShelfChanged} />
+                <BooksShelf title={"Read"} books={read} onShelfChanged={this.onShelfChanged} />
+              </div>
+            </div>
+            <div className="open-search">
+              <button onClick={() => history.push("/search")}>Add a book</button>
             </div>
           </div>
-          <div className="open-search">
-            <button onClick={()=> history.push("/search")}>Add a book</button>
-          </div>
-        </div>
         )} />
       </div>
     )
