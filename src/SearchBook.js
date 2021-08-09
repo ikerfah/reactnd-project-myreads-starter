@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Book from './Book';
 import * as BooksAPI from './BooksAPI';
+import debounce from 'lodash.debounce';
 class SearchBook extends Component {
     state = {
         query: '',
@@ -10,28 +11,40 @@ class SearchBook extends Component {
 
     }
 
+    debouncedEventHandler = debounce((query) => this.fetchBooks(query), 300);
+
+    fetchBooks = (query) => {
+        // This to be sure no api call after removing all the query
+        if (query === '') {
+            this.setState((_) => ({
+                query: '',
+                searchedBooks: []
+            }))
+            return;
+        }
+
+        BooksAPI.search(query)
+            .then((books) => {
+                if (books.error) {
+                    this.setState({
+                        error: books.error,
+                        searchedBooks: [...books.items]
+                    })
+                } else {
+                    this.setState((_) => ({
+                        error: '',
+                        searchedBooks: [...books]
+                    }))
+                }
+            })
+    }
     handleOnChangeQuery = (value) => {
         this.setState((_) => ({
             query: value,
             searchedBooks: []
         }))
-        if (value !== '') {
-            BooksAPI.search(value)
-                .then((books) => {
-                    if (books.error) {
-                        this.setState({
-                            error: books.error,
-                            searchedBooks: [...books.items]
-                        })
-                    } else {
-                        this.setState((_) => ({
-                            error: '',
-                            searchedBooks: [...books]
-                        }))
-                    }
+        this.debouncedEventHandler(value)
 
-                })
-        }
 
     }
     onShelfChanged = (book, newShelfValue) => {
