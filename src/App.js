@@ -14,12 +14,26 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    isLoading: true // To avoid showing shelf is empty when page first loaded
+    isLoading: true, // To avoid showing shelf is empty when page first loaded,
+    shelves: [
+      {
+        title: 'Currently Reading',
+        id: 'currentlyReading'
+      },
+      {
+        title: 'Want to Read',
+        id: 'wantToRead'
+      },
+      {
+        title: 'Read',
+        id: 'read'
+      },
+    ]
   }
 
-  componentDidMount() {
-    BooksAPI.getAll()
-      .then((books) => this.setState({ books, isLoading: false }))
+  async componentDidMount() {
+    const books = await BooksAPI.getAll()
+    this.setState({ books, isLoading: false })
   }
 
   onShelfChanged = (book, newShelfValue) => {
@@ -42,10 +56,15 @@ class BooksApp extends React.Component {
       return <p>Loading...</p>
     }
 
-    const { books } = this.state
-    const currentlyReading = books.filter((book) => book.shelf === 'currentlyReading')
-    const wantToRead = books.filter((book) => book.shelf === 'wantToRead')
-    const read = books.filter((book) => book.shelf === 'read')
+    const { books, shelves } = this.state
+
+    const shelvesComponent = shelves.map((shelf) =>
+    (<BooksShelf
+      key={shelf.id}
+      title={shelf.title}
+      books={books.filter((book) => book.shelf === shelf.id)}
+      onShelfChanged={this.onShelfChanged}
+    />))
 
     return (
       <div className="app">
@@ -64,9 +83,7 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <BooksShelf title={"Currently Reading"} books={currentlyReading} onShelfChanged={this.onShelfChanged} />
-                <BooksShelf title={"Want to Read"} books={wantToRead} onShelfChanged={this.onShelfChanged} />
-                <BooksShelf title={"Read"} books={read} onShelfChanged={this.onShelfChanged} />
+                {shelvesComponent}
               </div>
             </div>
             <div className="open-search">
